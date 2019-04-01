@@ -1,13 +1,20 @@
 package dev.kevinyu.service.restful.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Document(collection = "books")
-public class BookDO {
+public class BookDO implements Serializable {
+
+    public BookDO(){
+        authors = new ArrayList<>();
+    }
 
     @Id
     @Field("book_id")
@@ -22,6 +29,7 @@ public class BookDO {
     @Field("unit_price")
     private double price;
 
+    @DBRef
     @Field("authors")
     private List<AuthorDO> authors;
 

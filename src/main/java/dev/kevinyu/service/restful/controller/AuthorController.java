@@ -5,6 +5,7 @@ import dev.kevinyu.service.restful.service.AuthorService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,27 +35,29 @@ public class AuthorController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    @ApiOperation("Create a new Author.")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation("Create a new author.")
     public AuthorDO postNewAuthor(@RequestBody AuthorDO author){
-        return _authorService.postNewAuthor(author);
+        return _authorService.post(author);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    @ApiOperation("Update a Zoo (entire object).")
+    @ApiOperation("Update a book (entire object).")
     public AuthorDO putAuthor(@PathVariable String id, @RequestBody AuthorDO author){
-        return _authorService.updateAuthor(id, author);
+        return _authorService.update(id, author);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
-    @ApiOperation("Update a Zoo (partial object).")
+    @ApiOperation("Update a book (partial object).")
     public AuthorDO PATCHAuthor(@PathVariable String id, @RequestBody AuthorDO author){
         //TODO: Write a new method to partial update author object.
-        return _authorService.updateAuthor(id, author);
+        return _authorService.update(id, author);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    @ApiOperation("Update a Zoo (entire object).")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiOperation("Update a book (entire object).")
     public void putAuthor(@PathVariable String id){
-        _authorService.deleteAuthor(id);
+        _authorService.delete(id);
     }
 }
