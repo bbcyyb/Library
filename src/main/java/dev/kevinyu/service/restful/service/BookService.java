@@ -1,18 +1,18 @@
 package dev.kevinyu.service.restful.service;
 
-import dev.kevinyu.service.restful.model.BookDO;
+import dev.kevinyu.service.restful.model.BookVO;
 
 import java.util.List;
 
 public interface BookService {
 
-    List<BookDO> getList();
+    List<BookVO> getList();
 
-    BookDO getById(String id);
+    BookVO getById(String id);
 
-    BookDO post(BookDO book);
+    BookVO post(BookVO book);
 
-    BookDO update(String id, BookDO book);
+    BookVO update(String id, BookVO book);
 
     void delete(String id);
 }

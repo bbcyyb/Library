@@ -1,17 +1,17 @@
 package dev.kevinyu.service.restful.service;
 
-import dev.kevinyu.service.restful.model.AuthorDO;
+import dev.kevinyu.service.restful.model.AuthorVO;
 
 import java.util.List;
 
 public interface AuthorService {
-    List<AuthorDO> getList();
+    List<AuthorVO> getList();
 
-    AuthorDO getById(String id);
+    AuthorVO getById(String id);
 
-    AuthorDO post(AuthorDO author);
+    AuthorVO post(AuthorVO author);
 
-    AuthorDO update(String id, AuthorDO author);
+    AuthorVO update(String id, AuthorVO author);
 
     void delete(String id);
 }

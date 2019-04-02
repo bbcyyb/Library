@@ -1,7 +1,7 @@
 package dev.kevinyu.service.restful.model;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -13,12 +13,12 @@ import java.util.List;
 public class BookDO implements Serializable {
 
     public BookDO(){
-        authors = new ArrayList<>();
+        authorIds = new ArrayList<>();
     }
 
     @Id
     @Field("book_id")
-    private String bookId;
+    private ObjectId bookId;
 
     @Field("book_name")
     private String bookName;
@@ -29,15 +29,14 @@ public class BookDO implements Serializable {
     @Field("unit_price")
     private double price;
 
-    @DBRef
-    @Field("authors")
-    private List<AuthorDO> authors;
+    @Field("author_ids")
+    private List<ObjectId> authorIds;
 
-    public String getBookId() {
+    public ObjectId getBookId() {
         return bookId;
     }
 
-    public void setBookId(String bookId) {
+    public void setBookId(ObjectId bookId) {
         this.bookId = bookId;
     }
 
@@ -65,11 +64,11 @@ public class BookDO implements Serializable {
         this.price = price;
     }
 
-    public List<AuthorDO> getAuthors() {
-        return authors;
+    public List<ObjectId> getAuthorIds() {
+        return authorIds;
     }
 
-    public void setAuthors(List<AuthorDO> authors) {
-        this.authors = authors;
+    public void setAuthorIds(List<ObjectId> authorIds) {
+        this.authorIds = authorIds;
     }
 }
