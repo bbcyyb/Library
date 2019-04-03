@@ -10,7 +10,7 @@
 
 #### [] Implement envelope to provide unified access experience
 
-#### [] Implement embed parameter
+#### [x] Implement embed parameter
 
 #### [] Use standard http status code in response
 
@@ -18,7 +18,7 @@
 
 #### [x] Add Basic authentication.
 
-#### [] Use SwaggerUI
+#### [x] Use SwaggerUI
 
 #### [] Use JWT to implement Token access
 

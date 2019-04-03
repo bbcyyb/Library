@@ -28,17 +28,17 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public List<AuthorVO> getList() {
+    public List<AuthorVO> getList(boolean embed) {
         List<AuthorDO> Authors = _authorRepository.findAll();
-        List<AuthorVO> result = Authors.stream().map(AuthorDO -> convertToAuthorVO(AuthorDO)).collect(Collectors.toList());
+        List<AuthorVO> result = Authors.stream().map(AuthorDO -> convertToAuthorVO(AuthorDO, embed)).collect(Collectors.toList());
 
         return result;
     }
 
     @Override
-    public AuthorVO getById(String id) {
+    public AuthorVO getById(String id, boolean embed) {
         AuthorDO authorDO = _authorRepository.findById(new ObjectId(id)).get();
-        AuthorVO authorVO = convertToAuthorVO(authorDO);
+        AuthorVO authorVO = convertToAuthorVO(authorDO, embed);
 
         return authorVO;
     }
@@ -72,17 +72,22 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     private AuthorVO convertToAuthorVO(AuthorDO authorDO) {
+        return convertToAuthorVO(authorDO, false);
+    }
+    private AuthorVO convertToAuthorVO(AuthorDO authorDO, boolean embed) {
         AuthorVO authorVO = new AuthorVO();
         BeanUtils.copyProperties(authorDO, authorVO);
         authorVO.setAuthorId(authorDO.getAuthorId().toString());
-        List<BookDO> bookDOs = _bookRepository.findBookDOSByBookIdIn(authorDO.getBookIds());
-        List<BookVO> bookVOs = bookDOs.stream().map(bookDO -> {
-            BookVO bookVO = new BookVO();
-            BeanUtils.copyProperties(bookDO, bookVO);
-            bookVO.setBookId(bookDO.getBookId().toString());
-            return bookVO;
-        }).collect(Collectors.toList());
-        authorVO.setBooks(bookVOs);
+        if(embed) {
+            List<BookDO> bookDOs = _bookRepository.findBookDOSByBookIdIn(authorDO.getBookIds());
+            List<BookVO> bookVOs = bookDOs.stream().map(bookDO -> {
+                BookVO bookVO = new BookVO();
+                BeanUtils.copyProperties(bookDO, bookVO);
+                bookVO.setBookId(bookDO.getBookId().toString());
+                return bookVO;
+            }).collect(Collectors.toList());
+            authorVO.setBooks(bookVOs);
+        }
 
         return authorVO;
     }

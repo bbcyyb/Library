@@ -25,20 +25,20 @@ public class BookController {
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     @ApiOperation("List all books.")
-    public List<BookVO> getBookList(){
-        return _bookService.getList();
+    public List<BookVO> getBookList(@RequestParam(value="embed",required = false, defaultValue="false")boolean embed){
+        return _bookService.getList(embed);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ApiOperation("Retrieve an entire book object.")
-    public BookVO getBook(@PathVariable String id){
-        return _bookService.getById(id);
+    public BookVO getBook(@PathVariable String id, @RequestParam(value="embed",required = false, defaultValue="false")boolean embed){
+        return _bookService.getById(id, embed);
     }
 
     @RequestMapping(value = "/{id}/authors", method = RequestMethod.GET)
     @ApiOperation("Retrieve an entire book object.")
     public List<AuthorVO> getAuthorsByBookId(@PathVariable String id){
-        BookVO bookVO = _bookService.getById(id);
+        BookVO bookVO = _bookService.getById(id, true);
         return bookVO.getAuthors();
     }
 

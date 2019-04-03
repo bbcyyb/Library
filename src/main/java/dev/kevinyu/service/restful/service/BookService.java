@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface BookService {
 
-    List<BookVO> getList();
+    List<BookVO> getList(boolean embed);
 
-    BookVO getById(String id);
+    BookVO getById(String id, boolean embed);
 
     BookVO post(BookVO book);
 

@@ -3,7 +3,6 @@ package dev.kevinyu.service.restful.controller;
 import dev.kevinyu.service.restful.model.AuthorVO;
 import dev.kevinyu.service.restful.model.BookVO;
 import dev.kevinyu.service.restful.service.AuthorService;
-import dev.kevinyu.service.restful.service.BookService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,20 +25,20 @@ public class AuthorController {
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     @ApiOperation("List all authors.")
-    public List<AuthorVO> getAuthorList(){
-        return _authorService.getList();
+    public List<AuthorVO> getAuthorList(@RequestParam(value="embed",required = false, defaultValue="false")boolean embed){
+        return _authorService.getList(embed);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ApiOperation("Retrieve an entire author object.")
-    public AuthorVO getAuthor(@PathVariable String id){
-        return _authorService.getById(id);
+    public AuthorVO getAuthor(@PathVariable String id, @RequestParam(value="embed",required = false, defaultValue="false")boolean embed){
+        return _authorService.getById(id, embed);
     }
 
     @RequestMapping(value = "/{id}/books", method = RequestMethod.GET)
     @ApiOperation("Retrieve an entire author object.")
     public List<BookVO> getBooksByAuthorId(@PathVariable String id){
-        AuthorVO authorVO = _authorService.getById(id);
+        AuthorVO authorVO = _authorService.getById(id, true);
         return authorVO.getBooks();
     }
 
