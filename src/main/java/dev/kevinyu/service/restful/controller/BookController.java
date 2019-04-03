@@ -1,5 +1,6 @@
 package dev.kevinyu.service.restful.controller;
 
+import dev.kevinyu.service.restful.model.AuthorVO;
 import dev.kevinyu.service.restful.model.BookVO;
 import dev.kevinyu.service.restful.service.BookService;
 import io.swagger.annotations.Api;
@@ -24,14 +25,21 @@ public class BookController {
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     @ApiOperation("List all books.")
-    public List<BookVO> getAuthorList(){
+    public List<BookVO> getBookList(){
         return _bookService.getList();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ApiOperation("Retrieve an entire book object.")
-    public BookVO getAuthor(@PathVariable String id){
+    public BookVO getBook(@PathVariable String id){
         return _bookService.getById(id);
+    }
+
+    @RequestMapping(value = "/{id}/authors", method = RequestMethod.GET)
+    @ApiOperation("Retrieve an entire book object.")
+    public List<AuthorVO> getAuthorsByBookId(@PathVariable String id){
+        BookVO bookVO = _bookService.getById(id);
+        return bookVO.getAuthors();
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)

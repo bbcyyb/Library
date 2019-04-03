@@ -15,12 +15,6 @@ public class RestfulApplication {
     }
 
     public static void main(String[] args) {
-
-        String encryptedUser = new BCryptPasswordEncoder().encode("12345678");
-        String encryptedAdmin = new BCryptPasswordEncoder().encode("87654321");
-        System.out.println("encryptedUser:  " + encryptedUser);
-        System.out.println("encryptedAdmin:  " + encryptedAdmin);
-
         SpringApplication.run(RestfulApplication.class, args);
     }
 

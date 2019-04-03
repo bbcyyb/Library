@@ -14,9 +14,9 @@
 
 #### [] Use standard http status code in response
 
-#### [] Add access control through Spring Security
+#### [x] Add access control through Spring Security
 
-#### [] Add Basic authentication.
+#### [x] Add Basic authentication.
 
 #### [] Use SwaggerUI
 
