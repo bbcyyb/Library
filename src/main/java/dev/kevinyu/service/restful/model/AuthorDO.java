@@ -19,7 +19,7 @@ public class AuthorDO implements Serializable {
     }
 
     @Id
-    @Field("author_id")
+    @Field("_id")
     private ObjectId authorId;
 
     @Field("author_name")

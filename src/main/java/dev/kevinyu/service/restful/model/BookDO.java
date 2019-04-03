@@ -17,7 +17,7 @@ public class BookDO implements Serializable {
     }
 
     @Id
-    @Field("book_id")
+    @Field("_id")
     private ObjectId bookId;
 
     @Field("book_name")

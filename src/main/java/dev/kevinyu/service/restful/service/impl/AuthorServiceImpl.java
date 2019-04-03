@@ -30,10 +30,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public List<AuthorVO> getList() {
         List<AuthorDO> Authors = _authorRepository.findAll();
-        List<AuthorVO> result = Authors.stream().map(AuthorDO -> {
-            AuthorVO authorVO = convertToAuthorVO(AuthorDO);
-            return authorVO;
-        }).collect(Collectors.toList());
+        List<AuthorVO> result = Authors.stream().map(AuthorDO -> convertToAuthorVO(AuthorDO)).collect(Collectors.toList());
 
         return result;
     }
