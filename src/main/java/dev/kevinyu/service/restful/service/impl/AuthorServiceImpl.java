@@ -10,13 +10,15 @@ import dev.kevinyu.service.restful.service.AuthorService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class AuthorServiceImpl implements AuthorService {
+public class AuthorServiceImpl extends BaseServiceImpl implements AuthorService {
 
     private AuthorRepository _authorRepository;
     private BookRepository _bookRepository;
@@ -28,11 +30,12 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public List<AuthorVO> getList(boolean embed) {
-        List<AuthorDO> Authors = _authorRepository.findAll();
-        List<AuthorVO> result = Authors.stream().map(AuthorDO -> convertToAuthorVO(AuthorDO, embed)).collect(Collectors.toList());
+    public List<AuthorVO> getList(boolean embed, String sortby, int offset, int limit) {
+        Pageable pageable = generatePageable(sortby, offset, limit);
+        Page<AuthorDO> authorDOs = _authorRepository.findAll(pageable);
+        Page<AuthorVO> authorVOs = authorDOs.map(authorDO -> convertToAuthorVO(authorDO, embed));
 
-        return result;
+        return authorVOs.getContent();
     }
 
     @Override

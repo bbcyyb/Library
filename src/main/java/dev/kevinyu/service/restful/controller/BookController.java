@@ -25,8 +25,11 @@ public class BookController {
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     @ApiOperation("List all books.")
-    public List<BookVO> getBookList(@RequestParam(value="embed",required = false, defaultValue="false")boolean embed){
-        return _bookService.getList(embed);
+    public List<BookVO> getBookList(@RequestParam(value="embed",required = false, defaultValue="false") boolean embed,
+                                    @RequestParam(value="sortby", required = false, defaultValue="") String sortby,
+                                    @RequestParam(value="offset", required = false, defaultValue="0") int offset,
+                                    @RequestParam(value="limit", required = false, defaultValue="0") int limit){
+        return _bookService.getList(embed, sortby, offset, limit);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -36,7 +39,7 @@ public class BookController {
     }
 
     @RequestMapping(value = "/{id}/authors", method = RequestMethod.GET)
-    @ApiOperation("Retrieve an entire book object.")
+    @ApiOperation("Retrieve author list of book.")
     public List<AuthorVO> getAuthorsByBookId(@PathVariable String id){
         BookVO bookVO = _bookService.getById(id, true);
         return bookVO.getAuthors();
@@ -44,28 +47,28 @@ public class BookController {
 
     @RequestMapping(value = "", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    @ApiOperation("Create a new book.")
+    @ApiOperation("Add a new book.")
     public BookVO postNewAuthor(@RequestBody BookVO book){
         return _bookService.post(book);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    @ApiOperation("Update a book (entire object).")
+    @ApiOperation("Update book (entire object).")
     public BookVO putAuthor(@PathVariable String id, @RequestBody BookVO book){
         return _bookService.update(id, book);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
-    @ApiOperation("Update a book (partial object).")
-    public BookVO PATCHAuthor(@PathVariable String id, @RequestBody BookVO book){
+    @ApiOperation("Update book (partial object).")
+    public BookVO patchAuthor(@PathVariable String id, @RequestBody BookVO book){
         //TODO: Write a new method to partial update author object.
         return _bookService.update(id, book);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @ApiOperation("Update a book (entire object).")
-    public void putAuthor(@PathVariable String id){
+    @ApiOperation("Delete book.")
+    public void deleteBook(@PathVariable String id){
         _bookService.delete(id);
     }
 

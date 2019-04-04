@@ -10,14 +10,15 @@ import dev.kevinyu.service.restful.service.BookService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class BookServiceImpl implements BookService {
+public class BookServiceImpl extends BaseServiceImpl implements BookService {
 
     private BookRepository _bookRepository;
     private AuthorRepository _authorRepository;
@@ -29,19 +30,16 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookVO> getList(boolean embed) {
-        List<BookDO> books = _bookRepository.findAll();
-        List<BookVO> result = books.stream().map(bookDO -> {
-            BookVO bookVO = convertToBookVO(bookDO,embed);
-            return bookVO;
-        }).collect(Collectors.toList());
+    public List<BookVO> getList(boolean embed, String sortby, int offset, int limit) {
+        Pageable pageable = generatePageable(sortby, offset, limit);
+        Page<BookDO> bookDOs = _bookRepository.findAll(pageable);
+        Page<BookVO> bookVOs = bookDOs.map(bookDO -> convertToBookVO(bookDO, embed));
 
-        return result;
+        return bookVOs.getContent();
     }
 
     @Override
     public BookVO getById(String id, boolean embed) {
-
         BookDO bookDO = _bookRepository.findById(new ObjectId(id)).get();
         BookVO bookVO = convertToBookVO(bookDO,embed);
 

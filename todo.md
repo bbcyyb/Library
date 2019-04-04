@@ -6,13 +6,13 @@
 
 #### [] Implement complex query for getting List
 
-#### [] Implement sort and paging
+#### [x] Implement sort and paging
 
 #### [] Implement envelope to provide unified access experience
 
 #### [x] Implement embed parameter
 
-#### [] Use standard http status code in response
+#### [x] Use standard http status code in response
 
 #### [x] Add access control through Spring Security
 

@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface BookService {
 
-    List<BookVO> getList(boolean embed);
+    List<BookVO> getList(boolean embed, String sortby, int offset, int limit);
 
     BookVO getById(String id, boolean embed);
 
