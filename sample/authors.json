@@ -1,0 +1,4 @@
+{"_id":{"$oid":"5ca3256175e1de45f076851f"},"author_name":"KevinYu","book_ids":[{"$oid":"5ca3256575e1de45f0768520"}],"_class":"dev.kevinyu.service.restful.model.AuthorDO"}
+{"_id":{"$oid":"5ca6234cd8500677486f75e4"},"author_name":"QiangHuang","book_ids":[],"_class":"dev.kevinyu.service.restful.model.AuthorDO"}
+{"_id":{"$oid":"5ca6235bd8500677486f75e5"},"author_name":"KellyLu","book_ids":[],"_class":"dev.kevinyu.service.restful.model.AuthorDO"}
+{"_id":{"$oid":"5ca62365d8500677486f75e6"},"author_name":"AlanWei","book_ids":[],"_class":"dev.kevinyu.service.restful.model.AuthorDO"}

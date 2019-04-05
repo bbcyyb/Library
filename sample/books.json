@@ -1,0 +1,6 @@
+{"_id":{"$oid":"5ca3256575e1de45f0768520"},"book_name":"Hahaha","isbn":"aaaaaaaaaaaaaaaaaaaaaaaaaaa","unit_price":{"$numberInt":"20"},"author_ids":[{"$oid":"5ca3256175e1de45f076851f"}],"_class":"dev.kevinyu.service.restful.model.BookDO"}
+{"_id":{"$oid":"5ca62bff5079828db4d0fd64"},"book_name":"AAA","isbn":"aaa","unit_price":{"$numberInt":"20"},"author_ids":[],"_class":"dev.kevinyu.service.restful.model.BookDO"}
+{"_id":{"$oid":"5ca62c0a5079828db4d0fd65"},"book_name":"BBB","isbn":"bbb","unit_price":{"$numberInt":"20"},"author_ids":[],"_class":"dev.kevinyu.service.restful.model.BookDO"}
+{"_id":{"$oid":"5ca62c0f5079828db4d0fd66"},"book_name":"CCC","isbn":"ccc","unit_price":{"$numberInt":"20"},"author_ids":[],"_class":"dev.kevinyu.service.restful.model.BookDO"}
+{"_id":{"$oid":"5ca62c155079828db4d0fd67"},"book_name":"DDD","isbn":"ddd","unit_price":{"$numberInt":"20"},"author_ids":[],"_class":"dev.kevinyu.service.restful.model.BookDO"}
+{"_id":{"$oid":"5ca62c1b5079828db4d0fd68"},"book_name":"EEE","isbn":"eee","unit_price":{"$numberInt":"20"},"author_ids":[],"_class":"dev.kevinyu.service.restful.model.BookDO"}

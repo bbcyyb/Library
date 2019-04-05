@@ -1,0 +1,2 @@
+{"_id":{"$oid":"5ca4a9b4a20a680bc8ba8d44"},"user_name":"User","role":{"$numberInt":"1"},"password":"$2a$10$0ljmP8YLLVvKT5K351U6nep9VxZGKqePZ4hDpjHk077SIbQ9y1Ovu"}
+{"_id":{"$oid":"5ca4aa04391af50bc836f297"},"user_name":"Admin","role":"2","password":"$2a$10$a2JSv84mmKD5o9gu8blN1.XQY1tXisZJK5X6ABiHycxhFNW0C4/B6"}
