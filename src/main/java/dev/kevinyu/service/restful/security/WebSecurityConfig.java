@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 
 @Configuration
 @EnableWebSecurity
@@ -54,8 +55,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 // Admin Role
-                .antMatchers(HttpMethod.PUT, "/api/v1/books/*/authors").hasRole(RoleType.Admin.getName())
-                .antMatchers(HttpMethod.DELETE).hasRole(RoleType.Admin.getName())
+                .antMatchers(HttpMethod.POST, "/api/v1/books/*/authors").hasRole(RoleType.Admin.getName())
+                .antMatchers(HttpMethod.DELETE, "/api/v1/books/*/authors").hasRole(RoleType.Admin.getName())
+                .antMatchers(HttpMethod.POST, "/api/v1/authors/*/books").hasRole(RoleType.Admin.getName())
+                .antMatchers(HttpMethod.DELETE, "/api/v1/authors/*/books").hasRole(RoleType.Admin.getName())
                 // Regular Role
                 .antMatchers(HttpMethod.GET).hasAnyRole(RoleType.Admin.getName(),RoleType.User.getName())
                 .antMatchers(HttpMethod.POST).hasAnyRole(RoleType.Admin.getName(),RoleType.User.getName())

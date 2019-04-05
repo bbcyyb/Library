@@ -10,6 +10,8 @@ import dev.kevinyu.service.restful.service.BookService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,9 +32,25 @@ public class BookServiceImpl extends BaseServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookVO> getList(boolean embed, String sortby, int offset, int limit) {
+    public List<BookVO> getList(boolean embed, String sortby, int offset, int limit, String bookName, String isbn) {
         Pageable pageable = generatePageable(sortby, offset, limit);
-        Page<BookDO> bookDOs = _bookRepository.findAll(pageable);
+        Page<BookDO> bookDOs = null;
+
+        if(!bookName.isEmpty() || !isbn.isEmpty()) {
+            BookDO bookTemp = new BookDO();
+            bookTemp.setBookName(bookName);
+            bookTemp.setISBN(isbn);
+
+            ExampleMatcher matcher = ExampleMatcher.matchingAny()
+                    .withIgnorePaths("authorIds")
+                    .withIgnorePaths("bookId");
+
+            Example<BookDO> example = Example.of(bookTemp, matcher);
+            bookDOs = _bookRepository.findAll(example, pageable);
+        } else {
+            bookDOs = _bookRepository.findAll(pageable);
+        }
+
         Page<BookVO> bookVOs = bookDOs.map(bookDO -> convertToBookVO(bookDO, embed));
 
         return bookVOs.getContent();
@@ -47,7 +65,7 @@ public class BookServiceImpl extends BaseServiceImpl implements BookService {
     }
 
     @Override
-    public BookVO post(BookVO book) {
+    public BookVO createBook(BookVO book) {
         BookDO bookDO = convertToBookDO(book);
         bookDO = _bookRepository.insert(bookDO);
         BookVO result = convertToBookVO(bookDO);
@@ -56,7 +74,12 @@ public class BookServiceImpl extends BaseServiceImpl implements BookService {
     }
 
     @Override
-    public BookVO update(String id, BookVO book) {
+    public BookVO addAuthorToBook(String id, AuthorVO author) {
+        return null;
+    }
+
+    @Override
+    public BookVO updateBook(String id, BookVO book) {
         boolean existed = _bookRepository.existsById(new ObjectId(id));
         if(!existed){
             return null;
@@ -70,8 +93,13 @@ public class BookServiceImpl extends BaseServiceImpl implements BookService {
     }
 
     @Override
-    public void delete(String id) {
+    public void deleteBook(String id) {
         _bookRepository.deleteById(new ObjectId(id));
+    }
+
+    @Override
+    public void removeAuthorFromBook(String bookId, String authorId) {
+
     }
 
     private BookVO convertToBookVO(BookDO bookDO){

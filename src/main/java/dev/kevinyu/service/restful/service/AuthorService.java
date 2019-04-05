@@ -1,18 +1,22 @@
 package dev.kevinyu.service.restful.service;
 
 import dev.kevinyu.service.restful.model.AuthorVO;
-import org.springframework.data.domain.Page;
+import dev.kevinyu.service.restful.model.BookVO;
 
 import java.util.List;
 
 public interface AuthorService {
-    List<AuthorVO> getList(boolean embed, String sortby, int offset, int limit);
+    List<AuthorVO> getList(boolean embed, String sortby, int offset, int limit, String authorName);
 
     AuthorVO getById(String id, boolean embed);
 
-    AuthorVO post(AuthorVO author);
+    AuthorVO createAuthor(AuthorVO author);
 
-    AuthorVO update(String id, AuthorVO author);
+    AuthorVO addBookToAuthor(String id, BookVO book);
 
-    void delete(String id);
+    AuthorVO updateAuthor(String id, AuthorVO author);
+
+    void deleteAuthor(String id);
+
+    void removeBookFromAuthor(String authorId, String bookId);
 }
