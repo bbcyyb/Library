@@ -7,7 +7,6 @@ import dev.kevinyu.service.restful.model.BookVO;
 import dev.kevinyu.service.restful.repository.AuthorRepository;
 import dev.kevinyu.service.restful.repository.BookRepository;
 import dev.kevinyu.service.restful.service.AuthorService;
-import jdk.jfr.events.ExceptionThrownEvent;
 import org.bson.types.ObjectId;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,31 +23,25 @@ import java.util.stream.Collectors;
 @Service
 public class AuthorServiceImpl extends BaseServiceImpl implements AuthorService {
 
-    private AuthorRepository _authorRepository;
-    private BookRepository _bookRepository;
+    private AuthorRepository authorRepository;
+    private BookRepository bookRepository;
 
     @Autowired
     public AuthorServiceImpl(AuthorRepository authorRepository, BookRepository bookRepository){
-        this._authorRepository = authorRepository;
-        this._bookRepository = bookRepository;
+        this.authorRepository = authorRepository;
+        this.bookRepository = bookRepository;
     }
 
     @Override
     public List<AuthorVO> getList(boolean embed, String sortby, int offset, int limit, String authorName) {
         Pageable pageable = generatePageable(sortby, offset, limit);
-        Page<AuthorDO> authorDOs = null;
-        if(!authorName.isEmpty()) {
-            AuthorDO authorTemp = new AuthorDO();
-            authorTemp.setAuthorName(authorName);
+        Page<AuthorDO> authorDOs;
 
-            ExampleMatcher matcher = ExampleMatcher.matchingAny()
-                    .withIgnorePaths("bookIds")
-                    .withIgnorePaths("authorId");
-
-            Example<AuthorDO> example = Example.of(authorTemp, matcher);
-            authorDOs = _authorRepository.findAll(example, pageable);
+        Example<AuthorDO> example = generateExample(authorName);
+        if(example != null) {
+            authorDOs = authorRepository.findAll(example, pageable);
         } else {
-            authorDOs = _authorRepository.findAll(pageable);
+            authorDOs = authorRepository.findAll(pageable);
         }
 
         Page<AuthorVO> authorVOs = authorDOs.map(authorDO -> convertToAuthorVO(authorDO, embed));
@@ -58,7 +51,7 @@ public class AuthorServiceImpl extends BaseServiceImpl implements AuthorService 
 
     @Override
     public AuthorVO getById(String id, boolean embed) {
-        AuthorDO authorDO = _authorRepository.findById(new ObjectId(id)).get();
+        AuthorDO authorDO = authorRepository.findById(new ObjectId(id)).get();
         AuthorVO authorVO = convertToAuthorVO(authorDO, embed);
 
         return authorVO;
@@ -67,7 +60,7 @@ public class AuthorServiceImpl extends BaseServiceImpl implements AuthorService 
     @Override
     public AuthorVO createAuthor(AuthorVO author) {
         AuthorDO authorDO = convertToAuthorDO(author);
-        authorDO = _authorRepository.insert(authorDO);
+        authorDO = authorRepository.insert(authorDO);
         AuthorVO result = convertToAuthorVO(authorDO);
 
         return result;
@@ -76,7 +69,7 @@ public class AuthorServiceImpl extends BaseServiceImpl implements AuthorService 
     @Override
     public AuthorVO addBookToAuthor(String id, BookVO book) {
         AuthorDO authorDO = null;
-        Optional<AuthorDO> optional = _authorRepository.findById(new ObjectId(id));
+        Optional<AuthorDO> optional = authorRepository.findById(new ObjectId(id));
         if(optional.isPresent()) {
             return null;
         }
@@ -86,13 +79,13 @@ public class AuthorServiceImpl extends BaseServiceImpl implements AuthorService 
 
     @Override
     public AuthorVO updateAuthor(String id, AuthorVO author) {
-        boolean existed = _authorRepository.existsById(new ObjectId(id));
+        boolean existed = authorRepository.existsById(new ObjectId(id));
         if(!existed){
             return null;
         }
 
         AuthorDO authorDO = convertToAuthorDO(author);
-        authorDO = _authorRepository.save(authorDO);
+        authorDO = authorRepository.save(authorDO);
         AuthorVO result = convertToAuthorVO(authorDO);
 
         return result;
@@ -100,12 +93,24 @@ public class AuthorServiceImpl extends BaseServiceImpl implements AuthorService 
 
     @Override
     public void deleteAuthor(String id) {
-        _authorRepository.deleteById(new ObjectId(id));
+        authorRepository.deleteById(new ObjectId(id));
     }
 
     @Override
     public void removeBookFromAuthor(String authorId, String bookId) {
+        //TODO:
+    }
 
+    @Override
+    public long count(String authorName) {
+        long result = 0L;
+        Example<AuthorDO> example = generateExample(authorName);
+        if(example != null) {
+            result = authorRepository.count(example);
+        } else {
+            result = authorRepository.count();
+        }
+        return result;
     }
 
     private AuthorVO convertToAuthorVO(AuthorDO authorDO) {
@@ -116,7 +121,7 @@ public class AuthorServiceImpl extends BaseServiceImpl implements AuthorService 
         BeanUtils.copyProperties(authorDO, authorVO);
         authorVO.setAuthorId(authorDO.getAuthorId().toString());
         if(embed) {
-            List<BookDO> bookDOs = _bookRepository.findBookDOSByBookIdIn(authorDO.getBookIds());
+            List<BookDO> bookDOs = bookRepository.findBookDOSByBookIdIn(authorDO.getBookIds());
             List<BookVO> bookVOs = bookDOs.stream().map(bookDO -> {
                 BookVO bookVO = new BookVO();
                 BeanUtils.copyProperties(bookDO, bookVO);
@@ -139,5 +144,21 @@ public class AuthorServiceImpl extends BaseServiceImpl implements AuthorService 
         List<ObjectId> bookIds = authorVO.getBooks().stream().map(bookVO -> new ObjectId(bookVO.getBookId())).collect(Collectors.toList());
         authorDO.setBookIds(bookIds);
         return authorDO;
+    }
+
+    private Example<AuthorDO> generateExample(String authorName) {
+        Example<AuthorDO> example = null;
+        if(!authorName.isEmpty()) {
+            AuthorDO authorTemp = new AuthorDO();
+            authorTemp.setAuthorName(authorName);
+
+            ExampleMatcher matcher = ExampleMatcher.matchingAny()
+                    .withIgnorePaths("bookIds")
+                    .withIgnorePaths("authorId");
+
+            example = Example.of(authorTemp, matcher);
+        }
+
+        return example;
     }
 }

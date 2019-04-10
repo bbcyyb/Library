@@ -19,4 +19,6 @@ public interface AuthorService {
     void deleteAuthor(String id);
 
     void removeBookFromAuthor(String authorId, String bookId);
+
+    long count(String authorName);
 }

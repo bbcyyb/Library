@@ -16,16 +16,16 @@ import java.util.stream.Collectors;
 @Service
 public class UsersServiceImpl implements UsersService {
 
-    private UserRepository _userRepository;
+    private UserRepository userRepository;
 
     @Autowired
     public UsersServiceImpl(UserRepository userRepository) {
-        this._userRepository = userRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
     public List<UserVO> getList() {
-        List<UserDO> userDOs = _userRepository.findAll();
+        List<UserDO> userDOs = userRepository.findAll();
         List<UserVO> userVOs = userDOs.stream().map(userDO -> convertToUserVO(userDO)).collect(Collectors.toList());
 
         return userVOs;
@@ -33,7 +33,7 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public UserVO getById(String id) {
-        UserDO userDO = _userRepository.findById(new ObjectId(id)).get();
+        UserDO userDO = userRepository.findById(new ObjectId(id)).get();
         UserVO userVO = convertToUserVO(userDO);
 
         return userVO;
@@ -41,7 +41,7 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public UserVO getByName(String username) {
-        UserDO userDO = _userRepository.findUserDOByUsername(username).get();
+        UserDO userDO = userRepository.findUserDOByUsername(username).get();
         UserVO userVO = convertToUserVO(userDO);
 
         return userVO;
@@ -50,7 +50,7 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public UserVO post(UserVO user) {
         UserDO userDO = convertToUserDO(user);
-        userDO = _userRepository.insert(userDO);
+        userDO = userRepository.insert(userDO);
         UserVO userVO = convertToUserVO(userDO);
 
         return userVO;
@@ -58,13 +58,13 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public UserVO update(String id, UserVO user) {
-        boolean existed = _userRepository.existsById(new ObjectId(id));
+        boolean existed = userRepository.existsById(new ObjectId(id));
         if(!existed){
             return null;
         }
 
         UserDO userDO = convertToUserDO(user);
-        userDO = _userRepository.save(userDO);
+        userDO = userRepository.save(userDO);
         UserVO userVO = convertToUserVO(userDO);
 
         return userVO;
@@ -72,7 +72,7 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public void delete(String id) {
-        _userRepository.deleteById(new ObjectId(id));
+        userRepository.deleteById(new ObjectId(id));
     }
 
     private UserVO convertToUserVO(UserDO userDO) {

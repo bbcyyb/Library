@@ -20,4 +20,6 @@ public interface BookService {
     void deleteBook(String id);
 
     void removeAuthorFromBook(String bookId, String authorId);
+
+    long count(String bookName,String isbn);
 }

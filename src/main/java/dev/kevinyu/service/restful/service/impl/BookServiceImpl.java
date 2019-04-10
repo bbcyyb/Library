@@ -22,33 +22,25 @@ import java.util.stream.Collectors;
 @Service
 public class BookServiceImpl extends BaseServiceImpl implements BookService {
 
-    private BookRepository _bookRepository;
-    private AuthorRepository _authorRepository;
+    private BookRepository bookRepository;
+    private AuthorRepository authorRepository;
 
     @Autowired
     public BookServiceImpl(BookRepository bookRepository, AuthorRepository authorRepository){
-        this._bookRepository = bookRepository;
-        this._authorRepository = authorRepository;
+        this.bookRepository = bookRepository;
+        this.authorRepository = authorRepository;
     }
 
     @Override
     public List<BookVO> getList(boolean embed, String sortby, int offset, int limit, String bookName, String isbn) {
         Pageable pageable = generatePageable(sortby, offset, limit);
-        Page<BookDO> bookDOs = null;
+        Page<BookDO> bookDOs;
 
-        if(!bookName.isEmpty() || !isbn.isEmpty()) {
-            BookDO bookTemp = new BookDO();
-            bookTemp.setBookName(bookName);
-            bookTemp.setISBN(isbn);
-
-            ExampleMatcher matcher = ExampleMatcher.matchingAny()
-                    .withIgnorePaths("authorIds")
-                    .withIgnorePaths("bookId");
-
-            Example<BookDO> example = Example.of(bookTemp, matcher);
-            bookDOs = _bookRepository.findAll(example, pageable);
+        Example<BookDO> example = generateExample(bookName, isbn);
+        if(example != null) {
+            bookDOs = bookRepository.findAll(example, pageable);
         } else {
-            bookDOs = _bookRepository.findAll(pageable);
+            bookDOs = bookRepository.findAll(pageable);
         }
 
         Page<BookVO> bookVOs = bookDOs.map(bookDO -> convertToBookVO(bookDO, embed));
@@ -58,7 +50,7 @@ public class BookServiceImpl extends BaseServiceImpl implements BookService {
 
     @Override
     public BookVO getById(String id, boolean embed) {
-        BookDO bookDO = _bookRepository.findById(new ObjectId(id)).get();
+        BookDO bookDO = bookRepository.findById(new ObjectId(id)).get();
         BookVO bookVO = convertToBookVO(bookDO,embed);
 
         return bookVO;
@@ -67,7 +59,7 @@ public class BookServiceImpl extends BaseServiceImpl implements BookService {
     @Override
     public BookVO createBook(BookVO book) {
         BookDO bookDO = convertToBookDO(book);
-        bookDO = _bookRepository.insert(bookDO);
+        bookDO = bookRepository.insert(bookDO);
         BookVO result = convertToBookVO(bookDO);
 
         return result;
@@ -75,18 +67,19 @@ public class BookServiceImpl extends BaseServiceImpl implements BookService {
 
     @Override
     public BookVO addAuthorToBook(String id, AuthorVO author) {
+        //TODO:
         return null;
     }
 
     @Override
     public BookVO updateBook(String id, BookVO book) {
-        boolean existed = _bookRepository.existsById(new ObjectId(id));
+        boolean existed = bookRepository.existsById(new ObjectId(id));
         if(!existed){
             return null;
         }
 
         BookDO bookDO = convertToBookDO(book);
-        bookDO = _bookRepository.save(bookDO);
+        bookDO = bookRepository.save(bookDO);
         BookVO result = convertToBookVO(bookDO);
 
         return result;
@@ -94,12 +87,25 @@ public class BookServiceImpl extends BaseServiceImpl implements BookService {
 
     @Override
     public void deleteBook(String id) {
-        _bookRepository.deleteById(new ObjectId(id));
+        bookRepository.deleteById(new ObjectId(id));
     }
 
     @Override
     public void removeAuthorFromBook(String bookId, String authorId) {
+        //TODO:
+    }
 
+    @Override
+    public long count(String bookName, String isbn) {
+        long result = 0L;
+        Example<BookDO> example = generateExample(bookName, isbn);
+        if(example != null) {
+            result = bookRepository.count(example);
+        } else {
+            result = bookRepository.count();
+        }
+
+        return result;
     }
 
     private BookVO convertToBookVO(BookDO bookDO){
@@ -111,7 +117,7 @@ public class BookServiceImpl extends BaseServiceImpl implements BookService {
         BeanUtils.copyProperties(bookDO, bookVO);
         bookVO.setBookId(bookDO.getBookId().toString());
         if(embed) {
-            List<AuthorDO> authorDOs = _authorRepository.findAuthorDOSByAuthorIdIn(bookDO.getAuthorIds());
+            List<AuthorDO> authorDOs = authorRepository.findAuthorDOSByAuthorIdIn(bookDO.getAuthorIds());
             List<AuthorVO> authorVOs = authorDOs.stream().map(authorDO -> {
                 AuthorVO authorVO = new AuthorVO();
                 BeanUtils.copyProperties(authorDO, authorVO);
@@ -135,5 +141,22 @@ public class BookServiceImpl extends BaseServiceImpl implements BookService {
         List<ObjectId> authorIds = bookVO.getAuthors().stream().map(authorVO -> new ObjectId(authorVO.getAuthorId())).collect(Collectors.toList());
         bookDO.setAuthorIds(authorIds);
         return bookDO;
+    }
+
+    private Example<BookDO> generateExample(String bookName, String isbn) {
+        Example<BookDO> example = null;
+        if(!bookName.isEmpty() || !isbn.isEmpty()) {
+            BookDO bookTemp = new BookDO();
+            bookTemp.setBookName(bookName);
+            bookTemp.setISBN(isbn);
+
+            ExampleMatcher matcher = ExampleMatcher.matchingAny()
+                    .withIgnorePaths("authorIds")
+                    .withIgnorePaths("bookId");
+
+            example = Example.of(bookTemp, matcher);
+        }
+
+        return example;
     }
 }

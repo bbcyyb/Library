@@ -2,7 +2,7 @@
 
 #### [x] Add basic CRUD for book resource
 
-#### [] Allow implement some additional activities as resources. e.g. Put /gists/:id/start, Get /counts/books
+#### [x] Allow implement some additional activities as resources. e.g. Put /gists/:id/start, Get /counts/books
 
 #### [] Implement complex query for getting List
 

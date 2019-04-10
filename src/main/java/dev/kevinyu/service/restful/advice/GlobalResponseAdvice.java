@@ -38,13 +38,11 @@ public class GlobalResponseAdvice extends ResponseEntityExceptionHandler impleme
 
     @Override
     public boolean supports(MethodParameter methodParameter, Class<? extends HttpMessageConverter<?>> aClass) {
-        System.out.println("public boolean supports(MethodParameter methodParameter, Class<? extends HttpMessageConverter<?>> aClass)");
         return true;
     }
 
     @Override
     public Object beforeBodyWrite(Object o, MethodParameter methodParameter, MediaType mediaType, Class<? extends HttpMessageConverter<?>> aClass, ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
-        System.out.println("public Object beforeBodyWrite(Object o, MethodParameter methodParameter, MediaType mediaType, Class<? extends HttpMessageConverter<?>> aClass, ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse)");
         return o instanceof ResultEntity ? o : ResultEntity.success(o);
     }
 }
