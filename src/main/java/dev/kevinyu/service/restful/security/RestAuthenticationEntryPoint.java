@@ -1,6 +1,5 @@
 package dev.kevinyu.service.restful.security;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -17,6 +16,7 @@ public class RestAuthenticationEntryPoint extends BasicAuthenticationEntryPoint 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException ex)
             throws IOException, ServletException {
+        System.out.println("public class RestAuthenticationEntryPoint extends BasicAuthenticationEntryPoint");
         response.addHeader("WWW-Authenticate", "Basic realm=" +getRealmName());
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         PrintWriter writer = response.getWriter();

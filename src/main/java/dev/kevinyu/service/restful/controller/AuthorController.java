@@ -1,5 +1,7 @@
 package dev.kevinyu.service.restful.controller;
 
+import dev.kevinyu.service.restful.exception.BadRequestException;
+import dev.kevinyu.service.restful.exception.NotFoundException;
 import dev.kevinyu.service.restful.model.AuthorVO;
 import dev.kevinyu.service.restful.model.BookVO;
 import dev.kevinyu.service.restful.service.AuthorService;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/v1/authors")
@@ -30,14 +33,18 @@ public class AuthorController {
                                         @RequestParam(value="sortby", required = false, defaultValue="") String sortby,
                                         @RequestParam(value="offset", required = false, defaultValue="0") int offset,
                                         @RequestParam(value="limit", required = false, defaultValue="0") int limit,
-                                        @RequestParam(value="authorName", required = false, defaultValue="") String authorName){
+                                        @RequestParam(value="authorName", required = false, defaultValue="") String authorName) {
         return _authorService.getList(embed, sortby, offset, limit, authorName);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ApiOperation("Retrieve an entire author object.")
-    public AuthorVO getAuthors(@PathVariable String id, @RequestParam(value="embed",required = false, defaultValue="false")boolean embed){
-        return _authorService.getById(id, embed);
+    public AuthorVO getAuthors(@PathVariable String id, @RequestParam(value="embed",required = false, defaultValue="false")boolean embed) throws NotFoundException {
+        try {
+            return _authorService.getById(id, embed);
+        } catch(NoSuchElementException ex) {
+            throw new NotFoundException("No value present");
+        }
     }
 
     @RequestMapping(value = "/{id}/books", method = RequestMethod.GET)

@@ -1,5 +1,6 @@
 package dev.kevinyu.service.restful.controller;
 
+import dev.kevinyu.service.restful.exception.NotFoundException;
 import dev.kevinyu.service.restful.model.AuthorVO;
 import dev.kevinyu.service.restful.model.BookVO;
 import dev.kevinyu.service.restful.service.BookService;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/v1/books")
@@ -63,8 +65,12 @@ public class BookController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     @ApiOperation("Update book (entire object).")
-    public BookVO updateBook(@PathVariable String id, @RequestBody BookVO book){
-        return _bookService.updateBook(id, book);
+    public BookVO updateBook(@PathVariable String id, @RequestBody BookVO book) throws NotFoundException {
+        try {
+            return _bookService.updateBook(id, book);
+        } catch(NoSuchElementException ex) {
+            throw new NotFoundException("No value present");
+        }
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)

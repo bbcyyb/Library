@@ -8,7 +8,7 @@
 
 #### [x] Implement sort and paging
 
-#### [] Implement envelope to provide unified access experience
+#### [x] Implement envelope to provide unified access experience
 
 #### [x] Implement embed parameter
 
