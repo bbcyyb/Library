@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Method;
 
 @RestControllerAdvice
 public class GlobalResponseAdvice extends ResponseEntityExceptionHandler implements ResponseBodyAdvice<Object> {
@@ -43,6 +44,12 @@ public class GlobalResponseAdvice extends ResponseEntityExceptionHandler impleme
 
     @Override
     public Object beforeBodyWrite(Object o, MethodParameter methodParameter, MediaType mediaType, Class<? extends HttpMessageConverter<?>> aClass, ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
+
+        String requestPath = serverHttpRequest.getURI().getPath();
+        if (requestPath.contains("/swagger") || requestPath.contains("/v2/api-docs")) {
+            return o;
+        }
+
         return o instanceof ResultEntity ? o : ResultEntity.success(o);
     }
 }
