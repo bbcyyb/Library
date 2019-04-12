@@ -1,5 +1,7 @@
 package dev.kevinyu.service.restful.service;
 
+import dev.kevinyu.service.restful.exception.BadRequestException;
+import dev.kevinyu.service.restful.exception.BaseResponseException;
 import dev.kevinyu.service.restful.model.AuthorVO;
 import dev.kevinyu.service.restful.model.BookVO;
 
@@ -13,13 +15,13 @@ public interface BookService {
 
     BookVO createBook(BookVO book);
 
-    BookVO addAuthorToBook(String id, AuthorVO author);
+    BookVO addAuthorToBook(String id, AuthorVO author) throws BaseResponseException;
 
     BookVO updateBook(String id, BookVO book);
 
-    void deleteBook(String id);
+    void deleteBook(String id) throws BaseResponseException;
 
-    void removeAuthorFromBook(String bookId, String authorId);
+    void removeAuthorFromBook(String bookId, String authorId) throws BaseResponseException;
 
     long count(String bookName,String isbn);
 }

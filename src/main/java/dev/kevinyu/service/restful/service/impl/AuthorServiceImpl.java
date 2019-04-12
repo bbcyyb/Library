@@ -1,5 +1,7 @@
 package dev.kevinyu.service.restful.service.impl;
 
+import dev.kevinyu.service.restful.exception.BadRequestException;
+import dev.kevinyu.service.restful.exception.BaseResponseException;
 import dev.kevinyu.service.restful.model.AuthorDO;
 import dev.kevinyu.service.restful.model.AuthorVO;
 import dev.kevinyu.service.restful.model.BookDO;
@@ -67,14 +69,28 @@ public class AuthorServiceImpl extends BaseServiceImpl implements AuthorService 
     }
 
     @Override
-    public AuthorVO addBookToAuthor(String id, BookVO book) {
-        AuthorDO authorDO = null;
-        Optional<AuthorDO> optional = authorRepository.findById(new ObjectId(id));
-        if(optional.isPresent()) {
-            return null;
+    public AuthorVO addBookToAuthor(String id, BookVO book) throws BaseResponseException {
+        if(book.getBookId().isEmpty()) {
+            throw new BadRequestException("Book id cannot be empty.");
         }
-        //TODO:
-        return null;
+
+        Optional<AuthorDO> optional = authorRepository.findById(new ObjectId(id));
+        if(!optional.isPresent()) {
+            throw new BadRequestException("Author is not present through id.");
+        }
+
+        AuthorDO authorDO = optional.get();
+        List<ObjectId> bookIdList = authorDO.getBookIds();
+        boolean exists = bookIdList.stream().anyMatch(bookId -> book.getBookId().equals(bookId.toString()));
+        if(exists) {
+            throw new BadRequestException("The book id exists in author already");
+        }
+
+        bookIdList.add(new ObjectId(book.getBookId()));
+        authorDO.setBookIds(bookIdList);
+        authorDO = authorRepository.save(authorDO);
+        AuthorVO authorVO = convertToAuthorVO(authorDO, true);
+        return authorVO;
     }
 
     @Override
@@ -92,13 +108,43 @@ public class AuthorServiceImpl extends BaseServiceImpl implements AuthorService 
     }
 
     @Override
-    public void deleteAuthor(String id) {
+    public void deleteAuthor(String id) throws BaseResponseException {
+        Optional<AuthorDO> optional = authorRepository.findById(new ObjectId(id));
+        if(!optional.isPresent()) {
+            throw new BadRequestException("Author is not present through id.");
+        }
+
+        AuthorDO authorDO = optional.get();
+        List<ObjectId> bookIdList = authorDO.getBookIds();
+
+        if(bookIdList.isEmpty()){
+            throw new BadRequestException("Cannot remove author who exists book in store");
+        }
+
         authorRepository.deleteById(new ObjectId(id));
     }
 
     @Override
-    public void removeBookFromAuthor(String authorId, String bookId) {
-        //TODO:
+    public void removeBookFromAuthor(String authorId, String bookId) throws BaseResponseException {
+        if(bookId.isEmpty()) {
+            throw new BadRequestException("Book id cannot be empty.");
+        }
+
+        Optional<AuthorDO> optional = authorRepository.findById(new ObjectId(authorId));
+        if(!optional.isPresent()) {
+            throw new BadRequestException("Author is not present through id.");
+        }
+
+        AuthorDO authorDO = optional.get();
+        List<ObjectId> bookIdList = authorDO.getBookIds();
+        boolean exists = bookIdList.stream().anyMatch(b -> bookId.equals(b.toString()));
+        if(!exists) {
+            throw new BadRequestException("The book id doesn't exist in author already");
+        }
+
+        bookIdList.removeIf(b -> bookId.equals(b.toString()));
+        authorDO.setBookIds(bookIdList);
+        authorRepository.save(authorDO);
     }
 
     @Override

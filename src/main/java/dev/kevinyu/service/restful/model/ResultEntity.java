@@ -1,5 +1,8 @@
 package dev.kevinyu.service.restful.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(value=JsonInclude.Include.NON_NULL)
 public final class ResultEntity {
 
     private ResultEntity(int statusCode, String errorMessage, Object data) {

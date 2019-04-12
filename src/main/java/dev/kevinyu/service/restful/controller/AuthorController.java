@@ -1,5 +1,6 @@
 package dev.kevinyu.service.restful.controller;
 
+import dev.kevinyu.service.restful.exception.BaseResponseException;
 import dev.kevinyu.service.restful.exception.NotFoundException;
 import dev.kevinyu.service.restful.model.AuthorVO;
 import dev.kevinyu.service.restful.model.BookVO;
@@ -55,7 +56,7 @@ public class AuthorController {
     @RequestMapping(value = "/{id}/books", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation("Add an author to a specific book author list.")
-    public AuthorVO addBookToAuthor(@PathVariable String id, @RequestBody BookVO book) {
+    public AuthorVO addBookToAuthor(@PathVariable String id, @RequestBody BookVO book) throws BaseResponseException {
         return authorService.addBookToAuthor(id, book);
     }
 
@@ -82,14 +83,14 @@ public class AuthorController {
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation("Delete author.")
-    public void deleteAuthor(@PathVariable String id){
+    public void deleteAuthor(@PathVariable String id) throws BaseResponseException {
         authorService.deleteAuthor(id);
     }
 
     @RequestMapping(value = "/{authorId}/books/{bookId}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation("Remove author from a specific book author list.")
-    public void removeAuthorFromBook(@PathVariable String bookId, @PathVariable String authorId){
-        authorService.removeBookFromAuthor(bookId, authorId);
+    public void removeAuthorFromBook(@PathVariable String authorId, @PathVariable String bookId) throws BaseResponseException {
+        authorService.removeBookFromAuthor(authorId, bookId);
     }
 }

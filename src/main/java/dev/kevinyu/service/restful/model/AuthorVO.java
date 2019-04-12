@@ -1,5 +1,7 @@
 package dev.kevinyu.service.restful.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +15,7 @@ public class AuthorVO {
 
     private String authorName;
 
+    @JsonInclude(value=JsonInclude.Include.NON_EMPTY)
     private List<BookVO> books;
 
     public String getAuthorId() {
